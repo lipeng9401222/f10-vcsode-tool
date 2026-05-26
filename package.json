@@ -1,0 +1,198 @@
+{
+  "name": "f10-vscode-tool",
+  "displayName": "F10 VSCode Tool",
+  "description": "F10 Vue 组件化框架一站式开发助手：环境安装、工程初始化、启动、打包、上传部署",
+  "version": "1.0.0",
+  "publisher": "epoint-fe",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Other"],
+  "keywords": ["epoint", "f10", "eui-cli", "vue"],
+  "icon": "resources/logo.png",
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "f10VscodeTool",
+          "title": "F10 VSCode Tool",
+          "icon": "resources/sidebar.svg"
+        }
+      ]
+    },
+    "views": {
+      "f10VscodeTool": [
+        {
+          "id": "f10VscodeTool.tree",
+          "name": "F10 VSCODE TOOL",
+          "icon": "resources/sidebar.svg",
+          "contextualTitle": "F10 VSCode Tool"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "f10VscodeTool.tree",
+        "contents": "欢迎使用 F10 VSCode Tool。\n请先打开一个工作区文件夹，再开始执行各项命令。\n[打开文件夹](command:vscode.openFolder)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "f10.installEnvironment",
+        "title": "F10: 环境安装",
+        "category": "F10",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "f10.quickStart",
+        "title": "F10: 快速开始（拉取 epoint-demo 仓库并初始化）",
+        "category": "F10",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "f10.createWorkspace",
+        "title": "F10: 创建工作区（eui-cli ws）",
+        "category": "F10",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "f10.createWebProject",
+        "title": "F10: 创建 web 工程（eui-cli web）",
+        "category": "F10",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "f10.createCompProject",
+        "title": "F10: 创建组件工程（eui-cli comp）",
+        "category": "F10",
+        "icon": "$(symbol-package)"
+      },
+      {
+        "command": "f10.enableMockMode",
+        "title": "F10: 开启 Mock 模式（修改 src/config.js 的 isMock）",
+        "category": "F10",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "f10.linkCompToWeb",
+        "title": "F10: 接入组件工程到 web 工程（自动改 package.json + setup.js）",
+        "category": "F10",
+        "icon": "$(link)"
+      },
+      {
+        "command": "f10.createPage",
+        "title": "F10: 新增页面（src/views/<目录>/<页面>.vue）",
+        "category": "F10",
+        "icon": "$(file-add)"
+      },
+      {
+        "command": "f10.installDeps",
+        "title": "F10: 安装依赖（pnpm install）",
+        "category": "F10",
+        "icon": "$(package)"
+      },
+      {
+        "command": "f10.buildAll",
+        "title": "F10: 编译所有包（eui-cli build）",
+        "category": "F10",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "f10.startProject",
+        "title": "F10: 启动工程（pnpm run dev）",
+        "category": "F10",
+        "icon": "$(play)"
+      },
+      {
+        "command": "f10.buildProject",
+        "title": "F10: 打包部署（pnpm run build）",
+        "category": "F10",
+        "icon": "$(package)"
+      },
+      {
+        "command": "f10.uploadApp",
+        "title": "F10: 上传应用",
+        "category": "F10",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "f10.openSettings",
+        "title": "F10: 打开/创建上传配置",
+        "category": "F10",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "f10.refreshTree",
+        "title": "刷新",
+        "category": "F10",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "f10.runTreeItem",
+        "title": "运行该项",
+        "category": "F10",
+        "icon": "$(play)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "f10.refreshTree",
+          "when": "view == f10VscodeTool.tree",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "f10.runTreeItem",
+          "when": "view == f10VscodeTool.tree && viewItem == f10.runnable",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "F10 VSCode Tool",
+      "properties": {
+        "f10.nodeVersion": {
+          "type": "string",
+          "default": "22.21.1",
+          "description": "环境安装时使用的 Node.js 版本"
+        },
+        "f10.npmRegistry": {
+          "type": "string",
+          "default": "http://192.168.0.99:8081/nexus/repository/npmpublic/",
+          "description": "公司私有 npm 源地址"
+        },
+        "f10.demoGitRepo": {
+          "type": "string",
+          "default": "git@192.168.217.8:epoint-framework/datamodel/epoint-demo.git",
+          "description": "epoint-demo 示例仓库地址"
+        },
+        "f10.demoBranch": {
+          "type": "string",
+          "default": "develop",
+          "description": "epoint-demo 默认分支"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.js --production",
+    "watch": "node esbuild.js --watch",
+    "package": "vsce package --no-dependencies",
+    "compile": "tsc -p ./",
+    "lint": "echo skip"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.27.0"
+  }
+}
