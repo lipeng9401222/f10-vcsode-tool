@@ -212,3 +212,44 @@ export function findConfigJsFile(webRoot: string): string | undefined {
   ];
   return candidates.find((p) => exists(p));
 }
+
+/**
+ * 从 web 工程的 src/config.js 中尝试解析 BASEPATH。
+ *
+ * 兼容两种写法：
+ *   const BASEPATH = process.env.VITE_RUN_ALL_PATH?.trim() || "/foo/bar/";
+ *   const BASEPATH = "/foo/bar/";
+ *
+ * 找不到就返回 undefined。
+ */
+export function readBasePathFromConfig(webRoot: string): string | undefined {
+  const file = findConfigJsFile(webRoot);
+  if (!file) return undefined;
+  let raw: string;
+  try {
+    raw = fs.readFileSync(file, 'utf-8');
+  } catch {
+    return undefined;
+  }
+  // 优先匹配字面量字符串里以 `/...` 开头的部分
+  const reFallback = /BASEPATH\s*=[^;]*?["'`](\/[^"'`]+)["'`]/m;
+  const m = reFallback.exec(raw);
+  if (m) {
+    return normalizeBasePath(m[1]);
+  }
+  // 退一步：匹配 basePath: "/foo"
+  const reBasePathField = /\bbasePath\s*[:=]\s*["'`](\/[^"'`]+)["'`]/m;
+  const m2 = reBasePathField.exec(raw);
+  if (m2) return normalizeBasePath(m2[1]);
+  return undefined;
+}
+
+/**
+ * 规范化 base 路径：保证以 `/` 开头，去掉结尾的 `/`。
+ */
+export function normalizeBasePath(p: string): string {
+  let r = p.trim();
+  if (!r.startsWith('/')) r = '/' + r;
+  if (r.length > 1 && r.endsWith('/')) r = r.slice(0, -1);
+  return r;
+}

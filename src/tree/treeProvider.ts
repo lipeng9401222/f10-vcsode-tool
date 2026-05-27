@@ -178,9 +178,16 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
         },
         {
           label: '启动工程',
-          description: 'pnpm run dev',
+          description: 'pnpm run dev --force',
           icon: 'play',
           commandId: 'f10.startProject'
+        },
+        {
+          label: '页面预览',
+          description: '在浏览器中打开 src/views 下的页面',
+          icon: 'browser',
+          commandId: 'f10.previewPage',
+          tooltip: '扫描组件工程 src/views，分级选择页面后用浏览器打开 vite dev 地址'
         }
       ]
     },

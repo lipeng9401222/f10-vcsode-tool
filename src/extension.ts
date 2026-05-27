@@ -19,6 +19,7 @@ import {
   linkCompToWebCommand,
   createPageCommand
 } from './commands/integrate';
+import { previewPageCommand } from './commands/previewPage';
 import { isF10Project } from './utils/workspace';
 import { log } from './utils/output';
 
@@ -112,6 +113,7 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('f10.installDeps', () => installDepsCommand());
   reg('f10.buildAll', () => buildAllCommand());
   reg('f10.startProject', () => startProjectCommand());
+  reg('f10.previewPage', () => previewPageCommand(context));
 
   reg('f10.buildProject', () => buildProjectCommand());
   reg('f10.uploadApp', () => uploadAppCommand());
