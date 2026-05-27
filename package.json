@@ -48,10 +48,16 @@
         "icon": "$(cloud-download)"
       },
       {
-        "command": "f10.quickStart",
-        "title": "F10: 快速开始（拉取 epoint-demo 仓库并初始化）",
+        "command": "f10.addEpointRegistry",
+        "title": "F10: 添加公司私有源（nrm + epoint）",
         "category": "F10",
-        "icon": "$(rocket)"
+        "icon": "$(globe)"
+      },
+      {
+        "command": "f10.installEuiCli",
+        "title": "F10: 安装 @epframe/eui-cli",
+        "category": "F10",
+        "icon": "$(tools)"
       },
       {
         "command": "f10.createWorkspace",
@@ -166,16 +172,6 @@
           "type": "string",
           "default": "http://192.168.0.99:8081/nexus/repository/npmpublic/",
           "description": "公司私有 npm 源地址"
-        },
-        "f10.demoGitRepo": {
-          "type": "string",
-          "default": "git@192.168.217.8:epoint-framework/datamodel/epoint-demo.git",
-          "description": "epoint-demo 示例仓库地址"
-        },
-        "f10.demoBranch": {
-          "type": "string",
-          "default": "develop",
-          "description": "epoint-demo 默认分支"
         }
       }
     }

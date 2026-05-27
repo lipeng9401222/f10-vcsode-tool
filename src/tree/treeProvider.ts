@@ -19,29 +19,45 @@ export interface TreeNodeData {
   children?: TreeNodeData[];
   /** 鼠标提示 */
   tooltip?: string;
+  /**
+   * 当前 F10 工程内自动禁用的分组标识。
+   * - 'init'   : 初始化分组（环境安装、快速开始、创建工程）
+   * - 'config' : 配置接入分组（Mock、接入组件、新增页面）
+   * 设置后，处于 F10 工程时会被置灰、点击禁用。
+   */
+  disableInF10?: 'init' | 'config';
 }
 
 class F10TreeItem extends vscode.TreeItem {
   /**
    * 构造侧边栏项。
    * @param data 节点定义
+   * @param disabled 是否处于禁用态（置灰、不可触发命令）
    */
-  constructor(public readonly data: TreeNodeData) {
+  constructor(public readonly data: TreeNodeData, disabled: boolean = false) {
     const collapsibleState = data.children && data.children.length > 0
       ? vscode.TreeItemCollapsibleState.Expanded
       : vscode.TreeItemCollapsibleState.None;
     super(data.label, collapsibleState);
-    this.tooltip = data.tooltip ?? data.label;
-    this.description = data.description;
+    this.tooltip = disabled
+      ? `${data.tooltip ?? data.label}（已是 F10 工程，初始化与配置接入相关命令已禁用）`
+      : data.tooltip ?? data.label;
+    this.description = disabled && data.description
+      ? `${data.description}（已禁用）`
+      : disabled
+        ? '（已禁用）'
+        : data.description;
     if (data.icon) {
-      this.iconPath = new vscode.ThemeIcon(data.icon);
+      this.iconPath = new vscode.ThemeIcon(disabled ? 'circle-slash' : data.icon);
     }
-    if (data.commandId) {
+    if (data.commandId && !disabled) {
       this.command = {
         command: data.commandId,
         title: data.label
       };
       this.contextValue = 'f10.runnable';
+    } else if (disabled) {
+      this.contextValue = 'f10.disabled';
     } else {
       this.contextValue = 'f10.group';
     }
@@ -55,44 +71,64 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
   private readonly _onDidChange = new vscode.EventEmitter<void>();
   readonly onDidChangeTreeData = this._onDidChange.event;
 
+  /**
+   * 当前是否处于 F10 工程上下文。
+   * 设为 true 时，所有 disableInF10 标记的节点会被置灰且不可点击。
+   */
+  private _inF10Project = false;
+
   /** 顶层节点定义，结构与文档六大流程对应 */
   private readonly roots: TreeNodeData[] = [
     {
       label: '初始化',
       icon: 'rocket',
       tooltip: '环境与项目初始化相关命令',
+      disableInF10: 'init',
       children: [
         {
           label: '环境安装',
-          description: 'nvm / node / pnpm / eui-cli',
+          description: '一键：nvm / node / nrm / pnpm / eui-cli',
           icon: 'cloud-download',
           commandId: 'f10.installEnvironment',
-          tooltip: '一键安装 Node.js、pnpm、@epframe/eui-cli 与公司私有源'
+          tooltip: '一键安装 nvm、Node.js、nrm 与公司私有源、pnpm、@epframe/eui-cli',
+          disableInF10: 'init'
         },
         {
-          label: '快速开始',
-          description: 'git clone epoint-demo',
-          icon: 'rocket',
-          commandId: 'f10.quickStart',
-          tooltip: '从远程仓库拉取示例工程并切换到指定分支'
+          label: '添加公司私有源',
+          description: 'nrm add epoint',
+          icon: 'globe',
+          commandId: 'f10.addEpointRegistry',
+          tooltip: '添加并切换到公司私有源，随后引导执行 npm login',
+          disableInF10: 'init'
+        },
+        {
+          label: '安装 eui-cli',
+          description: 'npm i -g @epframe/eui-cli',
+          icon: 'tools',
+          commandId: 'f10.installEuiCli',
+          tooltip: '全局安装公司组件化脚手架',
+          disableInF10: 'init'
         },
         {
           label: '创建工作区',
           description: 'eui-cli ws',
           icon: 'new-folder',
-          commandId: 'f10.createWorkspace'
+          commandId: 'f10.createWorkspace',
+          disableInF10: 'init'
         },
         {
           label: '创建 web 工程',
           description: 'eui-cli web',
           icon: 'new-file',
-          commandId: 'f10.createWebProject'
+          commandId: 'f10.createWebProject',
+          disableInF10: 'init'
         },
         {
           label: '创建组件工程',
           description: 'eui-cli comp',
           icon: 'symbol-package',
-          commandId: 'f10.createCompProject'
+          commandId: 'f10.createCompProject',
+          disableInF10: 'init'
         }
       ]
     },
@@ -179,8 +215,24 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
     this._onDidChange.fire();
   }
 
+  /**
+   * 设置 F10 工程上下文。
+   * 切换会触发整棵树刷新。
+   */
+  setInF10Project(value: boolean): void {
+    if (this._inF10Project === value) return;
+    this._inF10Project = value;
+    this.refresh();
+  }
+
+  /** 当前是否处于 F10 工程内 */
+  get inF10Project(): boolean {
+    return this._inF10Project;
+  }
+
   getTreeItem(element: TreeNodeData): vscode.TreeItem {
-    return new F10TreeItem(element);
+    const disabled = this._inF10Project && !!element.disableInF10;
+    return new F10TreeItem(element, disabled);
   }
 
   getChildren(element?: TreeNodeData): TreeNodeData[] {

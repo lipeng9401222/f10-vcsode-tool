@@ -24,15 +24,15 @@ export async function buildAllCommand(): Promise<void> {
 }
 
 /**
- * 命令：启动工程（pnpm run dev）
- * 在 web 工程目录下执行。
+ * 命令：启动工程（pnpm run dev --force）
+ * 在 web 工程目录下执行。`--force` 用于强制重新预构建，避免 vite 缓存导致问题。
  */
 export async function startProjectCommand(): Promise<void> {
   const root = getWorkspaceRoot();
   if (!root) return;
   const webDir = await pickWebProject(root);
   if (!webDir) return;
-  runInTerminal('pnpm run dev', { cwd: webDir, terminalName: 'F10 启动工程' });
+  runInTerminal('pnpm run dev --force', { cwd: webDir, terminalName: 'F10 启动工程' });
 }
 
 /**

@@ -63,6 +63,17 @@ export async function uploadAppCommand(): Promise<void> {
     return;
   }
 
+  // sdocKey 必填校验
+  if (!cfg.sdocKey || !String(cfg.sdocKey).trim()) {
+    const ans = await vscode.window.showErrorMessage(
+      '请前往魔方平台创建应用获取应用 key，并填写到 f10-tool.config.json 的 sdocKey 字段',
+      '打开配置文件',
+      '取消'
+    );
+    if (ans === '打开配置文件') await openSettingsCommand();
+    return;
+  }
+
   // 确定 dist 目录：先看 web 工程，再看 root
   const distName = cfg.distDir ?? 'dist';
   let distDir: string | undefined;
@@ -103,6 +114,7 @@ export async function uploadAppCommand(): Promise<void> {
         const fields: Record<string, string> = {
           appName: cfg!.appName,
           version: cfg!.version,
+          sdocKey: cfg!.sdocKey,
           ...(cfg!.extraFields ?? {})
         };
         const result = await uploadFile({

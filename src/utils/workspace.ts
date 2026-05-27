@@ -35,6 +35,25 @@ export function isPnpmWorkspace(root: string): boolean {
 }
 
 /**
+ * 检测当前工作区是否是 F10 / Epoint 组件化工程。
+ *
+ * 判定条件（同时满足）：
+ * 1. 是 pnpm workspace（存在 package.json + pnpm-workspace.yaml）
+ * 2. 工作区下既能找到至少一个 web 工程（package.json 含 scripts.dev、无 exports）
+ * 3. 工作区下也能找到至少一个组件工程（含 src/views + package.json.exports）
+ *
+ * 这样可以避免把"刚创建工作区还没建工程"或"只有 web 工程没有组件包"的目录误判为 F10 工程。
+ */
+export function isF10Project(root: string): boolean {
+  if (!isPnpmWorkspace(root)) return false;
+  const webs = findWebProjectDirs(root);
+  if (webs.length === 0) return false;
+  const comps = findCompProjectDirs(root);
+  if (comps.length === 0) return false;
+  return true;
+}
+
+/**
  * 在 root 下查找看起来像 web 工程的目录：
  * - 存在 package.json
  * - scripts 中包含 dev 命令

@@ -11,6 +11,11 @@ export interface UploadConfig {
   appName: string;
   /** 应用版本号 */
   version: string;
+  /**
+   * 魔方平台的应用 Key（必填）。
+   * 在魔方平台「创建应用」时获取，用于上传时关联应用。
+   */
+  sdocKey: string;
   /** dist 目录相对路径，默认 dist */
   distDir?: string;
   /** form-data 中文件字段名，默认 file */
@@ -30,6 +35,7 @@ export const DEFAULT_UPLOAD_CONFIG: UploadConfig = {
   uploadUrl: 'http://your-server.example.com/api/app/upload',
   appName: 'demo-web',
   version: '1.0.0',
+  sdocKey: '',
   distDir: 'dist',
   fileField: 'file',
   extraFields: {},
