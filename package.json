@@ -9,6 +9,10 @@
   },
   "categories": ["Other"],
   "keywords": ["epoint", "f10", "eui-cli", "vue"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lipeng9401222/f10-vcsode-tool.git"
+  },
   "icon": "resources/logo.png",
   "main": "./dist/extension.js",
   "activationEvents": [
