@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 /**
  * 侧边栏树节点。
  *
- * 顶层节点为 5 大功能分组：环境安装、快速开始、创建工程、启动工程、打包部署、上传应用、设置。
+ * 顶层节点为 5 大功能分组：初始化、配置接入、开发、部署、设置。
  * 叶子节点点击后触发对应的 VSCode 命令。
  */
 export interface TreeNodeData {
@@ -55,7 +55,7 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
   private readonly _onDidChange = new vscode.EventEmitter<void>();
   readonly onDidChangeTreeData = this._onDidChange.event;
 
-  /** 顶层节点定义，结构与文档六大流程对应 */
+  /** 顶层节点定义，结构与主要开发流程对应 */
   private readonly roots: TreeNodeData[] = [
     {
       label: '初始化',
@@ -64,42 +64,33 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
       children: [
         {
           label: '环境安装',
-          description: '一键：nvm / node / nrm / pnpm / eui-cli',
-          icon: 'cloud-download',
           commandId: 'f10.installEnvironment',
           tooltip: '一键安装 nvm、Node.js、nrm 与公司私有源、pnpm、@epframe/eui-cli'
         },
         {
           label: '添加公司私有源',
-          description: 'nrm add epoint',
-          icon: 'globe',
           commandId: 'f10.addEpointRegistry',
           tooltip: '添加并切换到公司私有源，随后引导执行 npm login'
         },
         {
           label: '安装 eui-cli',
-          description: 'npm i -g @epframe/eui-cli',
-          icon: 'tools',
           commandId: 'f10.installEuiCli',
           tooltip: '全局安装公司组件化脚手架'
         },
         {
           label: '创建工作区',
-          description: 'eui-cli ws',
-          icon: 'new-folder',
-          commandId: 'f10.createWorkspace'
+          commandId: 'f10.createWorkspace',
+          tooltip: '使用 eui-cli ws 创建 F10 工作区'
         },
         {
           label: '创建 web 工程',
-          description: 'eui-cli web',
-          icon: 'new-file',
-          commandId: 'f10.createWebProject'
+          commandId: 'f10.createWebProject',
+          tooltip: '使用 eui-cli web 创建 F10 web 启动工程'
         },
         {
           label: '创建组件工程',
-          description: 'eui-cli comp',
-          icon: 'symbol-package',
-          commandId: 'f10.createCompProject'
+          commandId: 'f10.createCompProject',
+          tooltip: '使用 eui-cli comp 创建 F10 组件工程'
         }
       ]
     },
@@ -110,24 +101,13 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
       children: [
         {
           label: '开启 Mock 模式',
-          description: '修改 src/config.js',
-          icon: 'beaker',
           commandId: 'f10.enableMockMode',
           tooltip: 'PC web 工程开启 isMock=true'
         },
         {
           label: '接入组件工程',
-          description: '修改 package.json + setup.js',
-          icon: 'link',
           commandId: 'f10.linkCompToWeb',
           tooltip: '把组件工程加入 web 工程的 dependencies 与 deps'
-        },
-        {
-          label: '新增页面',
-          description: 'src/views/<dir>/<page>.vue',
-          icon: 'file-add',
-          commandId: 'f10.createPage',
-          tooltip: '在组件工程的 src/views 下生成 Vue 页面'
         }
       ]
     },
@@ -137,26 +117,26 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
       children: [
         {
           label: '安装依赖',
-          description: 'pnpm install',
-          icon: 'package',
-          commandId: 'f10.installDeps'
+          commandId: 'f10.installDeps',
+          tooltip: '在工作区根目录安装依赖'
         },
         {
           label: '编译所有包',
-          description: 'eui-cli build',
-          icon: 'tools',
-          commandId: 'f10.buildAll'
+          commandId: 'f10.buildAll',
+          tooltip: '在工作区根目录编译所有包'
         },
         {
           label: '启动工程',
-          description: 'pnpm run dev --force',
-          icon: 'play',
-          commandId: 'f10.startProject'
+          commandId: 'f10.startProject',
+          tooltip: '选择 web 工程并启动开发服务'
+        },
+        {
+          label: '创建页面',
+          commandId: 'f10.createPage',
+          tooltip: '在组件工程的 src/views 下创建 Vue 页面'
         },
         {
           label: '页面预览',
-          description: '在浏览器中打开 src/views 下的页面',
-          icon: 'browser',
           commandId: 'f10.previewPage',
           tooltip: '扫描组件工程 src/views，分级选择页面后用浏览器打开 vite dev 地址'
         }
@@ -168,15 +148,13 @@ export class F10TreeDataProvider implements vscode.TreeDataProvider<TreeNodeData
       children: [
         {
           label: '打包部署',
-          description: 'pnpm run build',
-          icon: 'package',
-          commandId: 'f10.buildProject'
+          commandId: 'f10.buildProject',
+          tooltip: '选择 web 工程并执行打包'
         },
         {
           label: '上传应用',
-          description: '基于 f10-tool.config.json',
-          icon: 'cloud-upload',
-          commandId: 'f10.uploadApp'
+          commandId: 'f10.uploadApp',
+          tooltip: '基于 f10-tool.config.json 上传应用'
         }
       ]
     },

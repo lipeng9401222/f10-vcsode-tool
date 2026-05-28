@@ -95,7 +95,7 @@
       },
       {
         "command": "f10.createPage",
-        "title": "F10: 新增页面（src/views/<目录>/<页面>.vue）",
+        "title": "F10: 创建页面",
         "category": "F10",
         "icon": "$(file-add)"
       },
@@ -146,12 +146,6 @@
         "title": "刷新",
         "category": "F10",
         "icon": "$(refresh)"
-      },
-      {
-        "command": "f10.runTreeItem",
-        "title": "运行该项",
-        "category": "F10",
-        "icon": "$(play)"
       }
     ],
     "menus": {
@@ -160,13 +154,6 @@
           "command": "f10.refreshTree",
           "when": "view == f10VscodeTool.tree",
           "group": "navigation"
-        }
-      ],
-      "view/item/context": [
-        {
-          "command": "f10.runTreeItem",
-          "when": "view == f10VscodeTool.tree && viewItem == f10.runnable",
-          "group": "inline"
         }
       ]
     },

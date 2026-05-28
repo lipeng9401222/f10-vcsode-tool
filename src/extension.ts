@@ -67,12 +67,6 @@ export function activate(context: vscode.ExtensionContext): void {
   reg('f10.refreshTree', () => {
     tree.refresh();
   });
-  reg('f10.runTreeItem', async (...args: unknown[]) => {
-    const node = args[0] as { commandId?: string } | undefined;
-    if (node?.commandId) {
-      await vscode.commands.executeCommand(node.commandId);
-    }
-  });
 }
 
 /** 插件停用 */
